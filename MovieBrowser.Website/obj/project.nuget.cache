@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "pUKs2ZvMAz8hcOIQusAUoj+WLLmzY9//fvm7Ip84EFX4JpcmMnVfvKI7MfQPFkL71eSIp4TiWoiOgeZMQSB6bQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\david\\source\\repos\\MovieBrowser\\MovieBrowser.Website\\MovieBrowser.Website.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\david\\.nuget\\packages\\bootstrap\\5.2.3\\bootstrap.5.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
