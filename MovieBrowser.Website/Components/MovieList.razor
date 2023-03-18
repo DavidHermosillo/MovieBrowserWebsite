@@ -5,9 +5,9 @@
 @inject MovieDataFetchService MovieDataService
 
 <div class="container">
-    <div class="inputBox"><input type="text" /><button class="btn btn-dark">Search</button></div>
+    <div class="inputBox"><input type="text" @bind="@searchInput"/><button class="btn btn-dark" @onclick="(e => SearchForMovies())">Search</button></div>
     <div class="row row-cols-3 g-0">
-        @foreach (var movie in MovieListService.GetMovies())
+        @foreach (var movie in moviesList)
         {
             <div class="col mb-3 gx-3">
                 <div class="card h-100">
@@ -21,16 +21,26 @@
             </div>
         }
     </div>
+    <div class="prevNextButtons">
+        @if (currentPage != 1 && !usingMockData)
+        {
+            <button @onclick="(e => nextPrevPage(-1))" class="btn btn-dark previousButton">Previous</button>
+        }
+        @if (currentPage != maxPages && !usingMockData)
+        {
+            <button @onclick="(e => nextPrevPage(1))" class="btn btn-dark nextButton">Next</button>
+        }
+    </div>
 </div>
 
 
 @if (selectMovie != null)
 {
-    <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="movieModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">@selectMovie.Title</h1>
+                    <h1 class="modal-title fs-5" id="movieDisplayModal">@selectMovie.Title</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -59,12 +69,43 @@
 }
 
 @code {
-    MovieDetails selectMovie;
-    string selectMovieId;
+    private MovieDetails selectMovie;
+    private string selectMovieId;
+    private string searchInput;
+    private IEnumerable<Movie> moviesList =  new List<Movie>();
+    private int currentPage = 1;
+    private Boolean usingMockData = true;
+    private int maxPages = 1;
+
     void SelectMovie(string movieId)
     {
         selectMovieId = movieId;
         selectMovie = MovieDataService.getDetails(movieId);
-        Console.WriteLine(selectMovie.Director);
+    }
+    void SearchForMovies()
+    {
+        if(searchInput != null && searchInput != "") 
+        {
+            Search search = MovieDataService.GetMoviesList(searchInput);
+            moviesList = search.SearchResult;
+            usingMockData = false;
+            maxPages = Int32.Parse(search.totalResults) / 10;
+            if (Int32.Parse(search.totalResults) % 10 != 0)
+            {
+                maxPages++;
+            }
+        }
+    }
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        moviesList = MovieListService.GetMovies();
+        return base.SetParametersAsync(parameters);
+    }
+
+    void nextPrevPage(int num)
+    {
+        currentPage += num;
+        Search search = MovieDataService.getDifferentPage(searchInput, currentPage);
+        moviesList = search.SearchResult;
     }
 }
