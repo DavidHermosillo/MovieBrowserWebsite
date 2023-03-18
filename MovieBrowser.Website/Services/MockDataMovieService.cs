@@ -21,7 +21,6 @@ namespace MovieBrowser.Website.Services
         {
             string jsonString = File.ReadAllText(MockDataFileName);
             Search search = JsonSerializer.Deserialize<Search>(jsonString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
             return search.SearchResult;
         }
 

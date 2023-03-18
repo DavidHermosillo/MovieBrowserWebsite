@@ -15,6 +15,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: gray;
 }
 
 .row {
@@ -37,4 +38,18 @@ input {
 
 .poster {
     text-align: center;
+}
+
+.previousButton {
+    width: 7%;
+    margin-right: 5px;
+}
+
+.nextButton {
+    width: 7%;
+    margin-left: 5px;
+}
+
+.prevNextButtons {
+    text-align:center;
 }

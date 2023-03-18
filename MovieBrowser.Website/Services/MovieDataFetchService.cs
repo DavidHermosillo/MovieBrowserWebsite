@@ -24,7 +24,7 @@ namespace MovieBrowser.Website.Services
             return JsonSerializer.Deserialize<MovieDetails>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
-        public IEnumerable<Movie> GetMoviesList(string input)
+        public Search GetMoviesList(string input)
         {
             HttpClient request = new HttpClient();
             request.DefaultRequestHeaders.Add("User-Agent", "Anything");
@@ -33,7 +33,19 @@ namespace MovieBrowser.Website.Services
             response.EnsureSuccessStatusCode();
             string json = response.Content.ReadAsStringAsync().Result;
             Search search = JsonSerializer.Deserialize<Search>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return search.SearchResult;
+            return search;
+        }
+
+        public Search getDifferentPage(string input, int page)
+        {
+            HttpClient request = new HttpClient();
+            request.DefaultRequestHeaders.Add("User-Agent", "Anything");
+            request.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = request.GetAsync("http://www.omdbapi.com/?apikey=6f9ef35f&s=" + input + "&page=" + page).Result;
+            response.EnsureSuccessStatusCode();
+            string json = response.Content.ReadAsStringAsync().Result;
+            Search search = JsonSerializer.Deserialize<Search>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return search;
         }
     }
 }
