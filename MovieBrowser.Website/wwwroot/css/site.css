@@ -14,8 +14,8 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
-  background-color: gray;
+    margin-bottom: 60px;
+    background-color: #a4b0be;
 }
 
 .row {
@@ -28,7 +28,12 @@ input {
     border-top-style: hidden;
     border-right-style: hidden;
     border-left-style: hidden;
-    border-bottom-style: groove;
+    border-bottom-style: inset;
+    border-color: #a4b0be;
+    border-radius: 5px;
+    height: 35px;
+    background-color: #dfe4ea;
+    
 }
 
 .inputBox {
@@ -51,5 +56,43 @@ input {
 }
 
 .prevNextButtons {
-    text-align:center;
+    text-align: center;
+}
+
+.navbar-header {
+    text-align: center;
+    background-color: #a4b0be;
+}
+
+.home {
+    text-decoration: none;
+    color: black;
+    font-weight: bolder;
+}
+
+.home:hover {
+    color: black;
+}
+
+.card {
+    background-color: #ced6e0;
+}
+
+.footer .container {
+    color: black;
+}
+
+.modal-content {
+    background-color: #dfe6e9;
+}
+
+.modal-content li{
+    background-color: #dfe6e9;
+}
+
+.failed-search {
+    color: #EA2027;
+    text-align: center;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
