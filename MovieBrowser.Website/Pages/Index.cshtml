@@ -6,7 +6,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Movie Browser</h1>
+    <h1 class="home-container display-4"><a class="home" asp-area="" asp-page="/Index">Movie Browser</a></h1>
 </div>
 
 @(await Html.RenderComponentAsync<MovieList>(RenderMode.ServerPrerendered))

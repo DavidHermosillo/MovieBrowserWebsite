@@ -6,16 +6,20 @@
 
 <div class="container">
     <div class="inputBox"><input type="text" @bind="@searchInput"/><button class="btn btn-dark" @onclick="(e => SearchForMovies())">Search</button></div>
+    @if(noResults)
+    {
+        <div class="failed-search">No Results Found For "@searchInput"</div>
+    }
     <div class="row row-cols-3 g-0">
         @foreach (var movie in moviesList)
         {
             <div class="col mb-3 gx-3">
                 <div class="card h-100">
-                    <img class="card-img-top" src="@movie.Poster" alt="No Image Available" />
+                    <img class="card-img-top" src="@movie.Poster" alt="Image No Longer Available" />
                     <div class="card-body">
                         <h4 class="card-title">@movie.Title</h4>
                     </div>
-                    <div class="card-footer"><button class="btn btn-primary" @onclick="(e => SelectMovie(movie.Id))"
+                    <div class="card-footer"><button class="btn btn-primary btn-dark" @onclick="(e => SelectMovie(movie.Id))"
                         data-bs-toggle="modal" data-bs-target="#movieModal">More Info</button></div>
                 </div>
             </div>
@@ -33,69 +37,75 @@
     </div>
 </div>
 
-
-@if (selectMovie != null)
-{
-    <div class="modal fade" id="movieModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="movieDisplayModal">@selectMovie.Title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row pb-3">
-                            <div class="col-6 poster"><img src="@selectMovie.Poster" alt="Image No Longer Available"/></div>
-                            <div class="col-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">@selectMovie.Director</li>
-                                    <li class="list-group-item">@selectMovie.Actors</li>
-                                    <li class="list-group-item">@selectMovie.Genre</li>
-                                    <li class="list-group-item">@selectMovie.Year</li>
-                                    <li class="list-group-item">@selectMovie.Rated</li>
-                                    <li class="list-group-item">@selectMovie.Runtime</li>
-                                </ul>
-                            </div>
+<div class="modal fade" id="movieModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="movieDisplayModal">@selectMovie.Title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row pb-3">
+                        <div class="col-6 poster"><img src="@selectMovie.Poster" alt="Image No Longer Available" /></div>
+                        <div class="col-6">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">@selectMovie.Director</li>
+                                <li class="list-group-item">@selectMovie.Actors</li>
+                                <li class="list-group-item">@selectMovie.Genre</li>
+                                <li class="list-group-item">@selectMovie.Year</li>
+                                <li class="list-group-item">@selectMovie.Rated</li>
+                                <li class="list-group-item">@selectMovie.Runtime</li>
+                            </ul>
                         </div>
-                        <div class="row">
-                            <div class="col">@selectMovie.Plot</div>
-                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">@selectMovie.Plot</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-}
+</div>
 
 @code {
-    private MovieDetails selectMovie;
+    private MovieDetails selectMovie = new MovieDetails();
     private string selectMovieId;
     private string searchInput;
     private IEnumerable<Movie> moviesList =  new List<Movie>();
     private int currentPage = 1;
     private Boolean usingMockData = true;
     private int maxPages = 1;
+    private Boolean noResults = false;
 
     void SelectMovie(string movieId)
     {
         selectMovieId = movieId;
         selectMovie = MovieDataService.getDetails(movieId);
     }
+
     void SearchForMovies()
     {
         if(searchInput != null && searchInput != "") 
         {
             Search search = MovieDataService.GetMoviesList(searchInput);
-            moviesList = search.SearchResult;
-            usingMockData = false;
-            maxPages = Int32.Parse(search.totalResults) / 10;
-            if (Int32.Parse(search.totalResults) % 10 != 0)
+            if(search.Response.Equals("True"))
             {
-                maxPages++;
+                noResults = false;
+                moviesList = search.SearchResult;
+                usingMockData = false;
+                maxPages = Int32.Parse(search.totalResults) / 10;
+                if (Int32.Parse(search.totalResults) % 10 != 0)
+                {
+                    maxPages++;
+                }
+            }
+            else {
+                noResults = true;
             }
         }
     }
+
     public override Task SetParametersAsync(ParameterView parameters)
     {
         moviesList = MovieListService.GetMovies();
